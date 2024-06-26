@@ -3,9 +3,12 @@ use std::sync::Arc;
 use anyhow::Result;
 use windows::{
     core::BSTR,
-    Win32::System::Com::{
-        CoCreateInstance, CoInitializeEx, CoUninitialize, CLSCTX_INPROC_SERVER,
-        COINIT_MULTITHREADED,
+    Win32::{
+        Foundation::VARIANT_BOOL,
+        System::Com::{
+            CoCreateInstance, CoInitializeEx, CoUninitialize, CLSCTX_INPROC_SERVER,
+            COINIT_MULTITHREADED,
+        },
     },
 };
 
@@ -103,7 +106,7 @@ impl Cevio {
     /// cevio.start(false).unwrap();
     /// ```
     pub fn start(&self, no_wait: bool) -> Result<StartHostResult> {
-        unsafe { self.service.StartHost(no_wait) }
+        unsafe { self.service.StartHost(VARIANT_BOOL::from(no_wait)) }
             .map_err(|err| err.into())
             .map(|x| StartHostResult::from(x))
     }
@@ -131,31 +134,31 @@ impl Cevio {
     /// 音の大きさ（0～100）を取得します。
     ///
     pub fn volume(&self) -> Result<u32> {
-        unsafe { self.talker.GetVolume() }.map_err(|err| err.into())
+        unsafe { self.talker.Volume() }.map_err(|err| err.into())
     }
 
     /// 話す速さ（0～100）を取得します。
     ///
     pub fn speed(&self) -> Result<u32> {
-        unsafe { self.talker.GetSpeed() }.map_err(|err| err.into())
+        unsafe { self.talker.Speed() }.map_err(|err| err.into())
     }
 
     /// 音の高さ（0～100）を取得します。
     ///
     pub fn tone(&self) -> Result<u32> {
-        unsafe { self.talker.GetTone() }.map_err(|err| err.into())
+        unsafe { self.talker.Tone() }.map_err(|err| err.into())
     }
 
     /// 抑揚（0～100）を取得します。
     ///
     pub fn tone_scale(&self) -> Result<u32> {
-        unsafe { self.talker.GetToneScale() }.map_err(|err| err.into())
+        unsafe { self.talker.ToneScale() }.map_err(|err| err.into())
     }
 
     /// 声質（0～100）を取得します。
     ///
     pub fn alpha(&self) -> Result<u32> {
-        unsafe { self.talker.GetAlpha() }.map_err(|err| err.into())
+        unsafe { self.talker.Alpha() }.map_err(|err| err.into())
     }
 
     fn set_volume(&self, volume: u32) -> Result<()> {
@@ -204,7 +207,7 @@ impl Cevio {
     /// キャストを取得します。
     ///
     pub fn cast(&self) -> Result<String> {
-        unsafe { self.talker.GetCast() }
+        unsafe { self.talker.Cast() }
             .map_err(|err| err.into())
             .map(|x| x.to_string())
     }
@@ -391,7 +394,7 @@ impl Component {
     /// 感情の値（0～100）を取得します。
     ///
     pub fn value(&self) -> Result<u32> {
-        unsafe { self.component.GetValue() }.map_err(|err| err.into())
+        unsafe { self.component.Value() }.map_err(|err| err.into())
     }
 
     /// 感情の値（0～100）を設定します。
