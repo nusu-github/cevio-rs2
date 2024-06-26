@@ -1,0 +1,10 @@
+[package]
+name = "cevio-sys"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+windows = { workspace = true }
+windows-core = { workspace = true }

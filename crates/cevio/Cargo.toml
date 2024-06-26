@@ -1,0 +1,16 @@
+[package]
+name = "cevio"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = []
+
+[dependencies]
+anyhow = { workspace = true }
+windows = { workspace = true }
+windows-core = { workspace = true }
+
+cevio-sys = { path = "../cevio-sys" }
