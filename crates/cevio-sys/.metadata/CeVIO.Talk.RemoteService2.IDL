@@ -1,291 +1,431 @@
+// Generated .IDL file (by the OLE/COM Object Viewer)
+//
+// typelib filename: CeVIO.Talk.RemoteService2.tlb
+
 import "objidl.idl";
-import "oaidl.idl";
-import "propidl.idl";
 
 [
-  odl,
-  uuid(A409140F-B7A5-48EF-893E-8B971420E05A),
-  version(1.0),
-  dual,
-  oleautomation,
+	uuid(7E3B8901-0A65-44A0-9A9A-5F9F822D0716),
+	version(3.0),
 ]
-interface IPhonemeData2 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT Phoneme([out, retval] BSTR* pRetVal);
-    [id(0x60020001), propget]
-    HRESULT StartTime([out, retval] double* pRetVal);
-    [id(0x60020002), propget]
-    HRESULT EndTime([out, retval] double* pRetVal);
-};
+library CeVIO_Talk_RemoteService2
+{
+	// Forward declare all types defined in this typelib
+	interface IPhonemeData2;
+	interface ISpeakingState2;
+	interface ITalkerComponent2;
+	interface ITalkerComponentArray2;
+	interface IStringArray2;
+	interface IPhonemeDataArray2;
+	interface IServiceControl2;
+	interface IServiceControl2V40;
+	interface IServiceControl2V40Part;
+	interface ITalker2;
+	interface ITalker2V40;
+	interface ITalker2V40Part;
 
-[
-  odl,
-  uuid(EE2E846D-0120-4A31-A95B-14004D7CF730),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface ISpeakingState2 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT IsSucceeded([out, retval] VARIANT_BOOL* pRetVal);
-    [id(0x60020001), propget]
-    HRESULT IsCompleted([out, retval] VARIANT_BOOL* pRetVal);
-    [id(0x60020002)]
-    HRESULT Wait();
-    [id(0x60020003)]
-    HRESULT Wait_2([in] double timeoutSeconds);
-};
+	[
+		odl,
+		uuid(A409140F-B7A5-48EF-893E-8B971420E05A),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.IPhonemeData2")
+	]
+	interface IPhonemeData2 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT Phoneme([out, retval] BSTR* pRetVal);
+		[id(0x60020001), propget]
+		HRESULT StartTime([out, retval] double* pRetVal);
+		[id(0x60020002), propget]
+		HRESULT EndTime([out, retval] double* pRetVal);
+	};
 
-[
-  odl,
-  uuid(0FB8C1A2-4895-4EF1-9AC5-71CC45EC61B9),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface ITalkerComponent2 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT Id([out, retval] BSTR* pRetVal);
-    [id(0x60020001), propget]
-    HRESULT Name([out, retval] BSTR* pRetVal);
-    [id(00000000), propget]
-    HRESULT Value([out, retval] unsigned long* pRetVal);
-    [id(00000000), propput]
-    HRESULT Value([in] unsigned long pRetVal);
-};
+	[
+		uuid(9FF8647A-C6C9-49E6-88B9-1FC19EC13C13),
+		version(1.0),
+		noncreatable,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.PhonemeData2")
+	]
+	coclass PhonemeData2 {
+		[default] interface IPhonemeData2;
+	};
 
-[
-  odl,
-  uuid(50D7AB4E-0D5E-4FCE-B809-E784C58E5355),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface ITalkerComponentArray2 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT Length([out, retval] long* pRetVal);
-    [id(0x60020001)]
-    HRESULT At(
-                    [in] long index,
-                    [out, retval] ITalkerComponent2** pRetVal);
-    [id(0x60020002)]
-    HRESULT ByName(
-                    [in] BSTR Name,
-                    [out, retval] ITalkerComponent2** pRetVal);
-    [id(0x60020003)]
-    HRESULT Duplicate([out, retval] ITalkerComponentArray2** pRetVal);
-};
+	[
+		odl,
+		uuid(EE2E846D-0120-4A31-A95B-14004D7CF730),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.ISpeakingState2")
+	]
+	interface ISpeakingState2 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT IsSucceeded([out, retval] VARIANT_BOOL* pRetVal);
+		[id(0x60020001), propget]
+		HRESULT IsCompleted([out, retval] VARIANT_BOOL* pRetVal);
+		[id(0x60020002)]
+		HRESULT Wait();
+		[id(0x60020003), custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "Wait")]
+		HRESULT Wait_2([in] double timeoutSeconds);
+	};
 
-[
-  odl,
-  uuid(37F03F6E-9C51-4E32-BF31-761C6BC87AAC),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface IStringArray2 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT Length([out, retval] long* pRetVal);
-    [id(0x60020001)]
-    HRESULT At(
-                    [in] long index,
-                    [out, retval] BSTR* pRetVal);
-    [id(0x60020002)]
-    HRESULT Duplicate([out, retval] IStringArray2** pRetVal);
-};
+	[
+		uuid(9C404814-1CF6-4D35-8078-006BD6548C6B),
+		version(1.0),
+		noncreatable,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.SpeakingState2")
+	]
+	coclass SpeakingState2 {
+		[default] interface ISpeakingState2;
+	};
 
-[
-  odl,
-  uuid(96C207D5-B547-485F-8538-96A5BE0C73B6),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface IPhonemeDataArray2 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT Length([out, retval] long* pRetVal);
-    [id(0x60020001)]
-    HRESULT At(
-                    [in] long index,
-                    [out, retval] IPhonemeData2** pRetVal);
-    [id(0x60020002)]
-    HRESULT Duplicate([out, retval] IPhonemeDataArray2** pRetVal);
-};
+	[
+		odl,
+		uuid(0FB8C1A2-4895-4EF1-9AC5-71CC45EC61B9),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.ITalkerComponent2")
+	]
+	interface ITalkerComponent2 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT Id([out, retval] BSTR* pRetVal);
+		[id(0x60020001), propget]
+		HRESULT Name([out, retval] BSTR* pRetVal);
+		[id(00000000), propget]
+		HRESULT Value([out, retval] unsigned long* pRetVal);
+		[id(00000000), propput]
+		HRESULT Value([in] unsigned long pRetVal);
+	};
 
-[
-  odl,
-  uuid(F726D3E2-5A0F-4CA7-9029-D3549D594350),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface IServiceControl2 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT IsHostStarted([out, retval] VARIANT_BOOL* pRetVal);
-    [id(0x60020001)]
-    HRESULT StartHost(
-                    [in] VARIANT_BOOL noWait,
-                    [out, retval] long* pRetVal);
-    [id(0x60020002)]
-    HRESULT CloseHost([in] long mode);
-};
+	[
+		uuid(5958DBCF-0DFD-41C6-9852-ACAC4ACC9E9D),
+		version(1.0),
+		noncreatable,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.TalkerComponent2")
+	]
+	coclass TalkerComponent2 {
+		[default] interface ITalkerComponent2;
+	};
 
-[
-  odl,
-  uuid(5318F2D5-9973-4A11-A2D7-80FB823B7F9F),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface IServiceControl2V40 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT HostVersion([out, retval] BSTR* pRetVal);
-    [id(0x60020001), propget]
-    HRESULT InterfaceVersion([out, retval] BSTR* pRetVal);
-    [id(0x60020002), propget]
-    HRESULT IsHostStarted([out, retval] VARIANT_BOOL* pRetVal);
-    [id(0x60020003)]
-    HRESULT StartHost(
-                    [in] VARIANT_BOOL noWait,
-                    [out, retval] long* pRetVal);
-    [id(0x60020004)]
-    HRESULT CloseHost([in] long mode);
-};
+	[
+		odl,
+		uuid(50D7AB4E-0D5E-4FCE-B809-E784C58E5355),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.ITalkerComponentArray2")
+	]
+	interface ITalkerComponentArray2 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT Length([out, retval] long* pRetVal);
+		[id(0x60020001)]
+		HRESULT At(
+			[in] long index,
+			[out, retval] ITalkerComponent2** pRetVal);
+		[id(0x60020002)]
+		HRESULT ByName(
+			[in] BSTR Name,
+			[out, retval] ITalkerComponent2** pRetVal);
+		[id(0x60020003)]
+		HRESULT Duplicate([out, retval] ITalkerComponentArray2** pRetVal);
+	};
 
-[
-  odl,
-  uuid(0D1EF04D-07EE-4CAF-A424-E7819BE41516),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface IServiceControl2V40Part : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT HostVersion([out, retval] BSTR* pRetVal);
-    [id(0x60020001), propget]
-    HRESULT InterfaceVersion([out, retval] BSTR* pRetVal);
-};
+	[
+		uuid(134FD50F-8E05-42D3-A7E2-099758DE3811),
+		version(1.0),
+		noncreatable,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.TalkerComponentCollection2")
+	]
+	coclass TalkerComponentCollection2 {
+		[default] interface ITalkerComponentArray2;
+	};
 
-[
-  odl,
-  uuid(F5EED82F-A947-4B66-9411-4074EA111879),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface ITalker2 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT Volume([out, retval] unsigned long* pRetVal);
-    [id(0x60020000), propput]
-    HRESULT Volume([in] unsigned long pRetVal);
-    [id(0x60020002), propget]
-    HRESULT Speed([out, retval] unsigned long* pRetVal);
-    [id(0x60020002), propput]
-    HRESULT Speed([in] unsigned long pRetVal);
-    [id(0x60020004), propget]
-    HRESULT Tone([out, retval] unsigned long* pRetVal);
-    [id(0x60020004), propput]
-    HRESULT Tone([in] unsigned long pRetVal);
-    [id(0x60020006), propget]
-    HRESULT Alpha([out, retval] unsigned long* pRetVal);
-    [id(0x60020006), propput]
-    HRESULT Alpha([in] unsigned long pRetVal);
-    [id(0x60020008), propget]
-    HRESULT Components([out, retval] ITalkerComponentArray2** pRetVal);
-    [id(0x60020009), propget]
-    HRESULT Cast([out, retval] BSTR* pRetVal);
-    [id(0x60020009), propput]
-    HRESULT Cast([in] BSTR pRetVal);
-    [id(0x6002000b), propget]
-    HRESULT AvailableCasts([out, retval] IStringArray2** pRetVal);
-    [id(0x6002000c)]
-    HRESULT Speak(
-                    [in] BSTR text,
-                    [out, retval] ISpeakingState2** pRetVal);
-    [id(0x6002000d)]
-    HRESULT Stop([out, retval] VARIANT_BOOL* pRetVal);
-    [id(0x6002000e)]
-    HRESULT GetTextDuration(
-                    [in] BSTR text,
-                    [out, retval] double* pRetVal);
-    [id(0x6002000f)]
-    HRESULT GetPhonemes(
-                    [in] BSTR text,
-                    [out, retval] IPhonemeDataArray2** pRetVal);
-    [id(0x60020010)]
-    HRESULT OutputWaveToFile(
-                    [in] BSTR text,
-                    [in] BSTR path,
-                    [out, retval] VARIANT_BOOL* pRetVal);
-};
+	[
+		odl,
+		uuid(37F03F6E-9C51-4E32-BF31-761C6BC87AAC),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.IStringArray2")
+	]
+	interface IStringArray2 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT Length([out, retval] long* pRetVal);
+		[id(0x60020001)]
+		HRESULT At(
+			[in] long index,
+			[out, retval] BSTR* pRetVal);
+		[id(0x60020002)]
+		HRESULT Duplicate([out, retval] IStringArray2** pRetVal);
+	};
 
-[
-  odl,
-  uuid(38C647A8-39EC-433E-94C2-83E532F10CA1),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface ITalker2V40 : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT Volume([out, retval] unsigned long* pRetVal);
-    [id(0x60020000), propput]
-    HRESULT Volume([in] unsigned long pRetVal);
-    [id(0x60020002), propget]
-    HRESULT Speed([out, retval] unsigned long* pRetVal);
-    [id(0x60020002), propput]
-    HRESULT Speed([in] unsigned long pRetVal);
-    [id(0x60020004), propget]
-    HRESULT Tone([out, retval] unsigned long* pRetVal);
-    [id(0x60020004), propput]
-    HRESULT Tone([in] unsigned long pRetVal);
-    [id(0x60020006), propget]
-    HRESULT Alpha([out, retval] unsigned long* pRetVal);
-    [id(0x60020006), propput]
-    HRESULT Alpha([in] unsigned long pRetVal);
-    [id(0x60020008), propget]
-    HRESULT ToneScale([out, retval] unsigned long* pRetVal);
-    [id(0x60020008), propput]
-    HRESULT ToneScale([in] unsigned long pRetVal);
-    [id(0x6002000a), propget]
-    HRESULT Components([out, retval] ITalkerComponentArray2** pRetVal);
-    [id(0x6002000b), propget]
-    HRESULT Cast([out, retval] BSTR* pRetVal);
-    [id(0x6002000b), propput]
-    HRESULT Cast([in] BSTR pRetVal);
-    [id(0x6002000d), propget]
-    HRESULT AvailableCasts([out, retval] IStringArray2** pRetVal);
-    [id(0x6002000e)]
-    HRESULT Speak(
-                    [in] BSTR text,
-                    [out, retval] ISpeakingState2** pRetVal);
-    [id(0x6002000f)]
-    HRESULT Stop([out, retval] VARIANT_BOOL* pRetVal);
-    [id(0x60020010)]
-    HRESULT GetTextDuration(
-                    [in] BSTR text,
-                    [out, retval] double* pRetVal);
-    [id(0x60020011)]
-    HRESULT GetPhonemes(
-                    [in] BSTR text,
-                    [out, retval] IPhonemeDataArray2** pRetVal);
-    [id(0x60020012)]
-    HRESULT OutputWaveToFile(
-                    [in] BSTR text,
-                    [in] BSTR path,
-                    [out, retval] VARIANT_BOOL* pRetVal);
-};
+	[
+		uuid(F877DB3C-B2FD-4A97-9F55-355C94350E9B),
+		version(1.0),
+		noncreatable,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.StringArray2")
+	]
+	coclass StringArray2 {
+		[default] interface IStringArray2;
+	};
 
-[
-  odl,
-  uuid(247E9BBE-530B-4E02-94F9-22AEC45B7AD5),
-  version(1.0),
-  dual,
-  oleautomation,
-]
-interface ITalker2V40Part : IDispatch {
-    [id(0x60020000), propget]
-    HRESULT ToneScale([out, retval] unsigned long* pRetVal);
-    [id(0x60020000), propput]
-    HRESULT ToneScale([in] unsigned long pRetVal);
+	[
+		odl,
+		uuid(96C207D5-B547-485F-8538-96A5BE0C73B6),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.IPhonemeDataArray2")
+	]
+		interface IPhonemeDataArray2 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT Length([out, retval] long* pRetVal);
+		[id(0x60020001)]
+		HRESULT At(
+			[in] long index,
+			[out, retval] IPhonemeData2** pRetVal);
+		[id(0x60020002)]
+		HRESULT Duplicate([out, retval] IPhonemeDataArray2** pRetVal);
+	};
+
+	[
+		uuid(8C732FD9-C313-4F9B-BA0B-5E60A73A9A30),
+		version(1.0),
+		noncreatable,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.PhonemeDataArray2")
+	]
+	coclass PhonemeDataArray2 {
+		[default] interface IPhonemeDataArray2;
+	};
+
+	[
+		odl,
+		uuid(F726D3E2-5A0F-4CA7-9029-D3549D594350),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.IServiceControl2")
+	]
+	interface IServiceControl2 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT IsHostStarted([out, retval] VARIANT_BOOL* pRetVal);
+		[id(0x60020001)]
+		HRESULT StartHost(
+			[in] VARIANT_BOOL noWait,
+			[out, retval] long* pRetVal);
+		[id(0x60020002)]
+		HRESULT CloseHost([in] long mode);
+	};
+
+	[
+		odl,
+		uuid(5318F2D5-9973-4A11-A2D7-80FB823B7F9F),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.IServiceControl2V40")
+
+	]
+	interface IServiceControl2V40 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT HostVersion([out, retval] BSTR* pRetVal);
+		[id(0x60020001), propget]
+		HRESULT InterfaceVersion([out, retval] BSTR* pRetVal);
+		[id(0x60020002), propget]
+		HRESULT IsHostStarted([out, retval] VARIANT_BOOL* pRetVal);
+		[id(0x60020003)]
+		HRESULT StartHost(
+			[in] VARIANT_BOOL noWait,
+			[out, retval] long* pRetVal);
+		[id(0x60020004)]
+		HRESULT CloseHost([in] long mode);
+	};
+
+	[
+		odl,
+		uuid(0D1EF04D-07EE-4CAF-A424-E7819BE41516),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.IServiceControl2V40Part")
+	]
+	interface IServiceControl2V40Part : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT HostVersion([out, retval] BSTR* pRetVal);
+		[id(0x60020001), propget]
+		HRESULT InterfaceVersion([out, retval] BSTR* pRetVal);
+	};
+
+	[
+		uuid(B75AFE5E-DD52-42E9-A6F5-7BE5F6FE8EDB),
+		version(1.0),
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.ServiceControl2")
+	]
+	coclass ServiceControl2 {
+		[default] interface IServiceControl2;
+		interface IServiceControl2V40;
+		interface IServiceControl2V40Part;
+	};
+
+	[
+		uuid(3D882C2B-9C6D-480A-8E7E-1F017EE3D580),
+		version(1.0),
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.ServiceControl2V40")
+	]
+	coclass ServiceControl2V40 {
+		interface IServiceControl2;
+		[default] interface IServiceControl2V40;
+		interface IServiceControl2V40Part;
+	};
+
+	[
+		odl,
+		uuid(F5EED82F-A947-4B66-9411-4074EA111879),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.ITalker2")
+	]
+	interface ITalker2 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT Volume([out, retval] unsigned long* pRetVal);
+		[id(0x60020000), propput]
+		HRESULT Volume([in] unsigned long pRetVal);
+		[id(0x60020002), propget]
+		HRESULT Speed([out, retval] unsigned long* pRetVal);
+		[id(0x60020002), propput]
+		HRESULT Speed([in] unsigned long pRetVal);
+		[id(0x60020004), propget]
+		HRESULT Tone([out, retval] unsigned long* pRetVal);
+		[id(0x60020004), propput]
+		HRESULT Tone([in] unsigned long pRetVal);
+		[id(0x60020006), propget]
+		HRESULT Alpha([out, retval] unsigned long* pRetVal);
+		[id(0x60020006), propput]
+		HRESULT Alpha([in] unsigned long pRetVal);
+		[id(0x60020008), propget]
+		HRESULT Components([out, retval] ITalkerComponentArray2** pRetVal);
+		[id(0x60020009), propget]
+		HRESULT Cast([out, retval] BSTR* pRetVal);
+		[id(0x60020009), propput]
+		HRESULT Cast([in] BSTR pRetVal);
+		[id(0x6002000b), propget]
+		HRESULT AvailableCasts([out, retval] IStringArray2** pRetVal);
+		[id(0x6002000c)]
+		HRESULT Speak(
+			[in] BSTR text,
+			[out, retval] ISpeakingState2** pRetVal);
+		[id(0x6002000d)]
+		HRESULT Stop([out, retval] VARIANT_BOOL* pRetVal);
+		[id(0x6002000e)]
+		HRESULT GetTextDuration(
+			[in] BSTR text,
+			[out, retval] double* pRetVal);
+		[id(0x6002000f)]
+		HRESULT GetPhonemes(
+			[in] BSTR text,
+			[out, retval] IPhonemeDataArray2** pRetVal);
+		[id(0x60020010)]
+		HRESULT OutputWaveToFile(
+			[in] BSTR text,
+			[in] BSTR path,
+			[out, retval] VARIANT_BOOL* pRetVal);
+	};
+
+	[
+		odl,
+		uuid(38C647A8-39EC-433E-94C2-83E532F10CA1),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.ITalker2V40")
+	]
+	interface ITalker2V40 : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT Volume([out, retval] unsigned long* pRetVal);
+		[id(0x60020000), propput]
+		HRESULT Volume([in] unsigned long pRetVal);
+		[id(0x60020002), propget]
+		HRESULT Speed([out, retval] unsigned long* pRetVal);
+		[id(0x60020002), propput]
+		HRESULT Speed([in] unsigned long pRetVal);
+		[id(0x60020004), propget]
+		HRESULT Tone([out, retval] unsigned long* pRetVal);
+		[id(0x60020004), propput]
+		HRESULT Tone([in] unsigned long pRetVal);
+		[id(0x60020006), propget]
+		HRESULT Alpha([out, retval] unsigned long* pRetVal);
+		[id(0x60020006), propput]
+		HRESULT Alpha([in] unsigned long pRetVal);
+		[id(0x60020008), propget]
+		HRESULT ToneScale([out, retval] unsigned long* pRetVal);
+		[id(0x60020008), propput]
+		HRESULT ToneScale([in] unsigned long pRetVal);
+		[id(0x6002000a), propget]
+		HRESULT Components([out, retval] ITalkerComponentArray2** pRetVal);
+		[id(0x6002000b), propget]
+		HRESULT Cast([out, retval] BSTR* pRetVal);
+		[id(0x6002000b), propput]
+		HRESULT Cast([in] BSTR pRetVal);
+		[id(0x6002000d), propget]
+		HRESULT AvailableCasts([out, retval] IStringArray2** pRetVal);
+		[id(0x6002000e)]
+		HRESULT Speak(
+			[in] BSTR text,
+			[out, retval] ISpeakingState2** pRetVal);
+		[id(0x6002000f)]
+		HRESULT Stop([out, retval] VARIANT_BOOL* pRetVal);
+		[id(0x60020010)]
+		HRESULT GetTextDuration(
+			[in] BSTR text,
+			[out, retval] double* pRetVal);
+		[id(0x60020011)]
+		HRESULT GetPhonemes(
+			[in] BSTR text,
+			[out, retval] IPhonemeDataArray2** pRetVal);
+		[id(0x60020012)]
+		HRESULT OutputWaveToFile(
+			[in] BSTR text,
+			[in] BSTR path,
+			[out, retval] VARIANT_BOOL* pRetVal);
+	};
+
+	[
+		odl,
+		uuid(247E9BBE-530B-4E02-94F9-22AEC45B7AD5),
+		version(1.0),
+		dual,
+		oleautomation,
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.ITalker2V40Part")
+	]
+	interface ITalker2V40Part : IDispatch {
+		[id(0x60020000), propget]
+		HRESULT ToneScale([out, retval] unsigned long* pRetVal);
+		[id(0x60020000), propput]
+		HRESULT ToneScale([in] unsigned long pRetVal);
+	};
+
+	[
+		uuid(EFBCD077-659B-4E6B-A8A9-FE88BE66308C),
+		version(1.0),
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.Talker2")
+	]
+	coclass Talker2 {
+		[default] interface ITalker2;
+		interface ITalker2V40;
+		interface ITalker2V40Part;
+	};
+
+	[
+		uuid(60698BB3-F7BD-4119-B79E-482FF352EF3F),
+		version(1.0),
+		custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "CeVIO.Talk.RemoteService2.InteroperableComponents.Talker2V40")
+	]
+	coclass Talker2V40 {
+		interface ITalker2;
+		[default] interface ITalker2V40;
+		interface ITalker2V40Part;
+	};
 };

@@ -11,6 +11,8 @@ fn main() {
         "CeVIO.Talk.RemoteService2",
         "--config",
         "implement",
+        "--config",
+        "vtbl",
     ])
     .unwrap();
 }

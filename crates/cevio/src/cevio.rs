@@ -13,8 +13,8 @@ use windows::{
 };
 
 use cevio_sys::{
-    IServiceControl2V40, ISpeakingState2, ITalker2V40, ITalkerComponent2,
-    CLSID_SERVICE_CONTROL2V40, CLSID_TALKER2V40,
+    IServiceControl2V40, ISpeakingState2, ITalker2V40, ITalkerComponent2, ServiceControl2V40,
+    Talker2V40,
 };
 
 #[derive(Debug, PartialEq)]
@@ -79,9 +79,8 @@ impl Cevio {
             CoInitializeEx(None, COINIT_MULTITHREADED).ok()?;
 
             let service: IServiceControl2V40 =
-                CoCreateInstance(&CLSID_SERVICE_CONTROL2V40, None, CLSCTX_INPROC_SERVER)?;
-            let talker: ITalker2V40 =
-                CoCreateInstance(&CLSID_TALKER2V40, None, CLSCTX_INPROC_SERVER)?;
+                CoCreateInstance(&ServiceControl2V40, None, CLSCTX_INPROC_SERVER)?;
+            let talker: ITalker2V40 = CoCreateInstance(&Talker2V40, None, CLSCTX_INPROC_SERVER)?;
 
             Ok(Self {
                 service: Arc::new(service),
@@ -108,7 +107,7 @@ impl Cevio {
     pub fn start(&self, no_wait: bool) -> Result<StartHostResult> {
         unsafe { self.service.StartHost(VARIANT_BOOL::from(no_wait)) }
             .map_err(|err| err.into())
-            .map(|x| StartHostResult::from(x))
+            .map(StartHostResult::from)
     }
 
     /// CeVIO AIに終了を要求します。
@@ -189,16 +188,19 @@ impl Cevio {
     /// - 例2『小春六花』→ "嬉しい", "普通", "怒り", "哀しみ", "落ち着き"
     ///
     pub fn components(&self) -> Result<Vec<Component>> {
-        let talker_components_array2 = unsafe { self.talker.Components() }?;
-        let mut components = Vec::new();
+        let talker_components = unsafe { self.talker.Components() }?;
 
-        unsafe {
-            for i in 0..talker_components_array2.Length()? {
-                let talker_component = talker_components_array2.At(i)?;
+        let len = unsafe { talker_components.Length()? };
+        let mut components = Vec::with_capacity(len as usize);
+
+        for i in 0..len {
+            let component = unsafe {
+                let talker_component = talker_components.At(i)?;
                 let id = talker_component.Id()?.to_string();
                 let name = talker_component.Name()?.to_string();
-                components.push(Component::new(talker_component, id, name));
-            }
+                Component::new(talker_component, id, name)
+            };
+            components.push(component);
         }
 
         Ok(components)
@@ -219,12 +221,14 @@ impl Cevio {
     /// 利用可能なキャスト名を取得します。
     ///
     pub fn available_casts(&self) -> Result<Vec<String>> {
-        let string_array = unsafe { self.talker.AvailableCasts() }?;
-        let mut casts = Vec::new();
+        let strings = unsafe { self.talker.AvailableCasts() }?;
 
-        unsafe {
-            for i in 0..string_array.Length()? {
-                casts.push(string_array.At(i)?.to_string());
+        let len = unsafe { strings.Length()? };
+        let mut casts = Vec::with_capacity(len as usize);
+
+        for i in 0..len {
+            unsafe {
+                casts.push(strings.At(i)?.to_string());
             }
         }
 
@@ -274,12 +278,14 @@ impl Cevio {
     /// - リップシンク等に利用できます。
     ///
     pub fn phonemes(&self, text: &str) -> Result<Vec<PhonemeData>> {
-        let phoneme_data_array = unsafe { self.talker.GetPhonemes(&BSTR::from(text)) }?;
-        let mut phonemes = Vec::new();
+        let phoneme_datas = unsafe { self.talker.GetPhonemes(&BSTR::from(text)) }?;
 
-        unsafe {
-            for i in 0..phoneme_data_array.Length()? {
-                let data = phoneme_data_array.At(i)?;
+        let len = unsafe { phoneme_datas.Length()? };
+        let mut phonemes = Vec::with_capacity(len as usize);
+
+        for i in 0..len {
+            unsafe {
+                let data = phoneme_datas.At(i)?;
                 phonemes.push(PhonemeData {
                     phoneme: data.Phoneme()?.to_string(),
                     start_time: data.StartTime()?,

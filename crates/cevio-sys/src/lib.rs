@@ -1,21 +1,9 @@
-use windows_core::GUID;
-
 pub use bindings::Talk::RemoteService2::{
     IPhonemeData2, IPhonemeDataArray2, IServiceControl2, IServiceControl2V40,
     IServiceControl2V40Part, ISpeakingState2, IStringArray2, ITalker2, ITalker2V40,
-    ITalker2V40Part, ITalkerComponent2, ITalkerComponentArray2,
+    ITalker2V40Part, ITalkerComponent2, ITalkerComponentArray2, PhonemeData2, PhonemeDataArray2,
+    ServiceControl2, ServiceControl2V40, SpeakingState2, StringArray2, Talker2, Talker2V40,
+    TalkerComponent2, TalkerComponentCollection2,
 };
-
-pub const CLSID_PHONEME_DATA2: GUID = GUID::from_u128(0x9FF8647A_C6C9_49E6_88B9_1FC19EC13C13);
-pub const CLSID_SPEAKING_STATE2: GUID = GUID::from_u128(0x9C404814_1CF6_4D35_8078_006BD6548C6B);
-pub const CLSID_TALKER_COMPONENT2: GUID = GUID::from_u128(0x5958DBCF_0DFD_41C6_9852_ACAC4ACC9E9D);
-pub const CLSID_TALKER_COMPONENT_COLLECTION2: GUID =
-    GUID::from_u128(0x134FD50F_8E05_42D3_A7E2_099758DE3811);
-pub const CLSID_STRING_ARRAY2: GUID = GUID::from_u128(0xF877DB3C_B2FD_4A97_9F55_355C94350E9B);
-pub const CLSID_PHONEME_DATA_ARRAY2: GUID = GUID::from_u128(0x8C732FD9_C313_4F9B_BA0B_5E60A73A9A30);
-pub const CLSID_SERVICE_CONTROL2: GUID = GUID::from_u128(0xB75AFE5E_DD52_42E9_A6F5_7BE5F6FE8EDB);
-pub const CLSID_SERVICE_CONTROL2V40: GUID = GUID::from_u128(0x3D882C2B_9C6D_480A_8E7E_1F017EE3D580);
-pub const CLSID_TALKER2: GUID = GUID::from_u128(0xEFBCD077_659B_4E6B_A8A9_FE88BE66308C);
-pub const CLSID_TALKER2V40: GUID = GUID::from_u128(0x60698BB3_F7BD_4119_B79E_482FF352EF3F);
 
 mod bindings;
