@@ -17,43 +17,6 @@ use cevio_sys::{
     Talker2V40,
 };
 
-#[derive(Debug, PartialEq)]
-/// CeVIO起動結果
-pub enum StartHostResult {
-    /// 成功。起動済みの場合も含みます。
-    ///
-    Success,
-
-    /// インストール状態が不明。
-    ///
-    UnknownInstallState,
-
-    /// 実行ファイルが見つからない。
-    ///
-    ExecutableNotFound,
-
-    /// プロセスの起動に失敗。
-    ///
-    ProcessStartFailed,
-
-    /// アプリケーション起動後、エラーにより終了。
-    ///
-    ApplicationTerminated,
-}
-
-impl From<i32> for StartHostResult {
-    fn from(value: i32) -> Self {
-        match value {
-            0 => StartHostResult::Success,
-            -1 => StartHostResult::UnknownInstallState,
-            -2 => StartHostResult::ExecutableNotFound,
-            -3 => StartHostResult::ProcessStartFailed,
-            -4 => StartHostResult::ApplicationTerminated,
-            _ => panic!("Unexpected StartHost result value: {}", value),
-        }
-    }
-}
-
 pub enum CloseMode {
     Interactive = 0,
     Force = 1,
@@ -104,10 +67,16 @@ impl Cevio {
     /// let cevio = Cevio::new().unwrap();
     /// cevio.start(false).unwrap();
     /// ```
-    pub fn start(&self, no_wait: bool) -> Result<StartHostResult> {
-        unsafe { self.service.StartHost(VARIANT_BOOL::from(no_wait)) }
-            .map_err(|err| err.into())
-            .map(StartHostResult::from)
+    pub fn start(&self, no_wait: bool) -> Result<()> {
+        let result = unsafe { self.service.StartHost(VARIANT_BOOL::from(no_wait)) }?;
+        match result {
+            0 => Ok(()),
+            1 => anyhow::bail!("インストール状態が不明。"),
+            2 => anyhow::bail!("実行ファイルが見つからない。"),
+            3 => anyhow::bail!("プロセスの起動に失敗しました。"),
+            4 => anyhow::bail!("アプリケーション起動後、エラーにより終了しました。"),
+            _ => unreachable!(),
+        }
     }
 
     /// CeVIO AIに終了を要求します。
@@ -127,57 +96,57 @@ impl Cevio {
     /// cevio.close(CloseMode::Interactive).unwrap();
     /// ```
     pub fn close(&self, mode: CloseMode) -> Result<()> {
-        unsafe { self.service.CloseHost(mode as i32) }.map_err(|err| err.into())
+        Ok(unsafe { self.service.CloseHost(mode as i32) }?)
     }
 
     /// 音の大きさ（0～100）を取得します。
     ///
     pub fn volume(&self) -> Result<u32> {
-        unsafe { self.talker.Volume() }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.Volume() }?)
     }
 
     /// 話す速さ（0～100）を取得します。
     ///
     pub fn speed(&self) -> Result<u32> {
-        unsafe { self.talker.Speed() }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.Speed() }?)
     }
 
     /// 音の高さ（0～100）を取得します。
     ///
     pub fn tone(&self) -> Result<u32> {
-        unsafe { self.talker.Tone() }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.Tone() }?)
     }
 
     /// 抑揚（0～100）を取得します。
     ///
     pub fn tone_scale(&self) -> Result<u32> {
-        unsafe { self.talker.ToneScale() }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.ToneScale() }?)
     }
 
     /// 声質（0～100）を取得します。
     ///
     pub fn alpha(&self) -> Result<u32> {
-        unsafe { self.talker.Alpha() }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.Alpha() }?)
     }
 
     fn set_volume(&self, volume: u32) -> Result<()> {
-        unsafe { self.talker.SetVolume(volume) }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.SetVolume(volume) }?)
     }
 
     fn set_speed(&self, speed: u32) -> Result<()> {
-        unsafe { self.talker.SetSpeed(speed) }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.SetSpeed(speed) }?)
     }
 
     fn set_tone(&self, tone: u32) -> Result<()> {
-        unsafe { self.talker.SetTone(tone) }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.SetTone(tone) }?)
     }
 
     fn set_tone_scale(&self, tone_scale: u32) -> Result<()> {
-        unsafe { self.talker.SetToneScale(tone_scale) }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.SetToneScale(tone_scale) }?)
     }
 
     fn set_alpha(&self, alpha: u32) -> Result<()> {
-        unsafe { self.talker.SetAlpha(alpha) }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.SetAlpha(alpha) }?)
     }
 
     /// 現在のキャストの感情パラメータマップを取得します。
@@ -209,13 +178,11 @@ impl Cevio {
     /// キャストを取得します。
     ///
     pub fn cast(&self) -> Result<String> {
-        unsafe { self.talker.Cast() }
-            .map_err(|err| err.into())
-            .map(|x| x.to_string())
+        Ok(unsafe { self.talker.Cast() }?.to_string())
     }
 
     fn set_cast(&self, cast: &str) -> Result<()> {
-        unsafe { self.talker.SetCast(&BSTR::from(cast)) }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.SetCast(&BSTR::from(cast)) }?)
     }
 
     /// 利用可能なキャスト名を取得します。
@@ -244,18 +211,16 @@ impl Cevio {
     /// ## 備考
     /// - 再生終了を待たずに処理が戻ります。
     /// - 再生終了を待つには戻り値のwaitを呼び出します。
+    ///
     pub fn speak(&self, text: &str) -> Result<SpeakingState> {
-        unsafe { self.talker.Speak(&BSTR::from(text)) }
-            .map_err(|err| err.into())
-            .map(SpeakingState::new)
+        let speak_state = unsafe { self.talker.Speak(&BSTR::from(text)) }?;
+        Ok(SpeakingState::new(speak_state))
     }
 
     /// 再生を停止します。
     ///
     pub fn stop(&self) -> Result<bool> {
-        unsafe { self.talker.Stop() }
-            .map_err(|err| err.into())
-            .map(|x| x.as_bool())
+        Ok(unsafe { self.talker.Stop() }?.as_bool())
     }
 
     /// 指定したセリフの長さを取得します。
@@ -265,7 +230,7 @@ impl Cevio {
     /// * `text` - セリフ。
     ///
     pub fn text_duration(&self, text: &str) -> Result<f64> {
-        unsafe { self.talker.GetTextDuration(&BSTR::from(text)) }.map_err(|err| err.into())
+        Ok(unsafe { self.talker.GetTextDuration(&BSTR::from(text)) }?)
     }
 
     /// 指定したセリフの音素単位のデータを取得します。
@@ -308,12 +273,11 @@ impl Cevio {
     /// - 出力形式はサンプリングレート48kHz, ビットレート16bit, モノラルです。
     ///
     pub fn output_wave_to_file(&self, text: &str, path: &str) -> Result<bool> {
-        unsafe {
+        Ok(unsafe {
             self.talker
                 .OutputWaveToFile(&BSTR::from(text), &BSTR::from(path))
-        }
-        .map_err(|err| err.into())
-        .map(|x| x.as_bool())
+        }?
+        .as_bool())
     }
 
     /// キャストを設定します。
@@ -400,13 +364,13 @@ impl Component {
     /// 感情の値（0～100）を取得します。
     ///
     pub fn value(&self) -> Result<u32> {
-        unsafe { self.component.Value() }.map_err(|err| err.into())
+        Ok(unsafe { self.component.Value() }?)
     }
 
     /// 感情の値（0～100）を設定します。
     ///
     pub fn set_value(&self, value: u32) -> Result<()> {
-        unsafe { self.component.SetValue(value) }.map_err(|err| err.into())
+        Ok(unsafe { self.component.SetValue(value) }?)
     }
 }
 
@@ -422,23 +386,19 @@ impl SpeakingState {
     /// 再生が完了したかどうかを取得します。
     ///
     pub fn is_completed(&self) -> Result<bool> {
-        unsafe { self.state.IsCompleted() }
-            .map_err(|err| err.into())
-            .map(|x| x.as_bool())
+        Ok(unsafe { self.state.IsCompleted() }?.as_bool())
     }
 
     /// 再生が成功したかどうかを取得します。
     ///
     pub fn is_succeeded(&self) -> Result<bool> {
-        unsafe { self.state.IsSucceeded() }
-            .map_err(|err| err.into())
-            .map(|x| x.as_bool())
+        Ok(unsafe { self.state.IsSucceeded() }?.as_bool())
     }
 
     /// 再生終了を待ちます。
     ///
     pub fn wait(&self) -> Result<()> {
-        unsafe { self.state.Wait() }.map_err(|err| err.into())
+        Ok(unsafe { self.state.Wait() }?)
     }
 
     /// 再生終了を待ちます。
@@ -448,7 +408,7 @@ impl SpeakingState {
     /// * `seconds` - 待ち時間（秒）。
     ///
     pub fn wait_timeout(&self, seconds: f64) -> Result<()> {
-        unsafe { self.state.Wait_2(seconds) }.map_err(|err| err.into())
+        Ok(unsafe { self.state.Wait_2(seconds) }?)
     }
 }
 
