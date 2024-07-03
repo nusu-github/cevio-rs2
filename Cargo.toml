@@ -20,4 +20,4 @@ windows = { version = "0.57", features = [
     "Win32_System_Variant"
 ] }
 windows-core = "0.57"
-windows-bindgen = "0.57"
+windows-bindgen = "0.58"
