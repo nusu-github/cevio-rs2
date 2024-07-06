@@ -10,6 +10,7 @@ default = []
 
 [dependencies]
 anyhow = { workspace = true }
+derive_builder = "0.20.0"
 windows = { workspace = true }
 windows-core = { workspace = true }
 

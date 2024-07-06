@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use anyhow::Result;
+use derive_builder::Builder;
 use windows::{
     core::BSTR,
     Win32::{
@@ -18,7 +19,10 @@ use cevio_sys::{
 };
 
 pub enum CloseMode {
+    #[doc = "編集中の場合、保存や終了キャンセルが可能"]
     Interactive = 0,
+
+    #[doc = "強制的に終了"]
     Force = 1,
 }
 
@@ -84,7 +88,6 @@ impl Cevio {
     /// # Arguments
     ///
     /// * `mode`: 処理モード。
-    /// 0：【CeVIO AI】が編集中の場合、保存や終了キャンセルが可能。
     ///
     /// # Examples
     ///
@@ -101,65 +104,60 @@ impl Cevio {
 
     /// 音の大きさ（0～100）を取得します。
     ///
-    pub fn volume(&self) -> Result<u32> {
-        Ok(unsafe { self.talker.Volume() }?)
+    pub fn volume(&self) -> Result<u8> {
+        Ok(unsafe { self.talker.Volume() }? as u8)
     }
 
     /// 話す速さ（0～100）を取得します。
     ///
-    pub fn speed(&self) -> Result<u32> {
-        Ok(unsafe { self.talker.Speed() }?)
+    pub fn speed(&self) -> Result<u8> {
+        Ok(unsafe { self.talker.Speed() }? as u8)
     }
 
     /// 音の高さ（0～100）を取得します。
     ///
-    pub fn tone(&self) -> Result<u32> {
-        Ok(unsafe { self.talker.Tone() }?)
+    pub fn tone(&self) -> Result<u8> {
+        Ok(unsafe { self.talker.Tone() }? as u8)
     }
 
     /// 抑揚（0～100）を取得します。
     ///
-    pub fn tone_scale(&self) -> Result<u32> {
-        Ok(unsafe { self.talker.ToneScale() }?)
+    pub fn tone_scale(&self) -> Result<u8> {
+        Ok(unsafe { self.talker.ToneScale() }? as u8)
     }
 
     /// 声質（0～100）を取得します。
     ///
-    pub fn alpha(&self) -> Result<u32> {
-        Ok(unsafe { self.talker.Alpha() }?)
+    pub fn alpha(&self) -> Result<u8> {
+        Ok(unsafe { self.talker.Alpha() }? as u8)
     }
 
-    fn set_volume(&self, volume: u32) -> Result<()> {
-        Ok(unsafe { self.talker.SetVolume(volume) }?)
+    fn set_volume(&self, volume: u8) -> Result<()> {
+        Ok(unsafe { self.talker.SetVolume(volume as u32) }?)
     }
 
-    fn set_speed(&self, speed: u32) -> Result<()> {
-        Ok(unsafe { self.talker.SetSpeed(speed) }?)
+    fn set_speed(&self, speed: u8) -> Result<()> {
+        Ok(unsafe { self.talker.SetSpeed(speed as u32) }?)
     }
 
-    fn set_tone(&self, tone: u32) -> Result<()> {
-        Ok(unsafe { self.talker.SetTone(tone) }?)
+    fn set_tone(&self, tone: u8) -> Result<()> {
+        Ok(unsafe { self.talker.SetTone(tone as u32) }?)
     }
 
-    fn set_tone_scale(&self, tone_scale: u32) -> Result<()> {
-        Ok(unsafe { self.talker.SetToneScale(tone_scale) }?)
+    fn set_tone_scale(&self, tone_scale: u8) -> Result<()> {
+        Ok(unsafe { self.talker.SetToneScale(tone_scale as u32) }?)
     }
 
-    fn set_alpha(&self, alpha: u32) -> Result<()> {
-        Ok(unsafe { self.talker.SetAlpha(alpha) }?)
+    fn set_alpha(&self, alpha: u8) -> Result<()> {
+        Ok(unsafe { self.talker.SetAlpha(alpha as u32) }?)
     }
 
     /// 現在のキャストの感情パラメータマップを取得します。
     ///
-    /// ## 備考
-    /// - 内容はCastによって変化します。
-    /// - 例1『さとうささら』→ "普通", "元気", "怒り", "哀しみ"
-    /// - 例2『小春六花』→ "嬉しい", "普通", "怒り", "哀しみ", "落ち着き"
-    ///
     pub fn components(&self) -> Result<Vec<Component>> {
         let talker_components = unsafe { self.talker.Components() }?;
 
-        let len = unsafe { talker_components.Length()? };
+        let len = unsafe { talker_components.Length() }?;
         let mut components = Vec::with_capacity(len as usize);
 
         for i in 0..len {
@@ -167,7 +165,7 @@ impl Cevio {
                 let talker_component = talker_components.At(i)?;
                 let id = talker_component.Id()?.to_string();
                 let name = talker_component.Name()?.to_string();
-                Component::new(talker_component, id, name)
+                Component::new(talker_component, &id, &name)
             };
             components.push(component);
         }
@@ -185,18 +183,16 @@ impl Cevio {
         Ok(unsafe { self.talker.SetCast(&BSTR::from(cast)) }?)
     }
 
-    /// 利用可能なキャスト名を取得します。
+    /// 利用可能なキャスト名一覧を取得します。
     ///
     pub fn available_casts(&self) -> Result<Vec<String>> {
         let strings = unsafe { self.talker.AvailableCasts() }?;
 
-        let len = unsafe { strings.Length()? };
+        let len = unsafe { strings.Length() }?;
         let mut casts = Vec::with_capacity(len as usize);
 
         for i in 0..len {
-            unsafe {
-                casts.push(strings.At(i)?.to_string());
-            }
+            casts.push(unsafe { strings.At(i) }?.to_string());
         }
 
         Ok(casts)
@@ -245,7 +241,7 @@ impl Cevio {
     pub fn phonemes(&self, text: &str) -> Result<Vec<PhonemeData>> {
         let phoneme_datas = unsafe { self.talker.GetPhonemes(&BSTR::from(text)) }?;
 
-        let len = unsafe { phoneme_datas.Length()? };
+        let len = unsafe { phoneme_datas.Length() }?;
         let mut phonemes = Vec::with_capacity(len as usize);
 
         for i in 0..len {
@@ -282,95 +278,87 @@ impl Cevio {
 
     /// キャストを設定します。
     ///
-    /// キャスト名は、`Cevio::available_casts`を参照してください。
-    ///
-    /// # Arguments
-    ///
-    /// * `cast` - キャスト名。
-    ///
-    pub fn configure_cast(&self, cast: &str) -> Result<CastConfigBuilder> {
-        self.set_cast(cast)?;
-        Ok(CastConfigBuilder::new(self))
+    pub fn apply_cast(&self, cast: &Cast) -> Result<()> {
+        if let Some(ref cast) = cast.cast {
+            self.set_cast(cast)?;
+        }
+
+        if let Some(volume) = cast.volume {
+            self.set_volume(volume)?;
+        }
+
+        if let Some(speed) = cast.speed {
+            self.set_speed(speed)?;
+        }
+
+        if let Some(tone) = cast.tone {
+            self.set_tone(tone)?;
+        }
+
+        if let Some(tone_scale) = cast.tone_scale {
+            self.set_tone_scale(tone_scale)?;
+        }
+
+        if let Some(alpha) = cast.alpha {
+            self.set_alpha(alpha)?;
+        }
+
+        Ok(())
     }
 }
 
-pub struct CastConfigBuilder<'a> {
-    cevio: &'a Cevio,
-}
+#[derive(Default, Builder, Debug)]
+#[builder(setter(into, strip_option), default)]
+pub struct Cast {
+    #[doc = "キャスト名"]
+    pub cast: Option<String>,
 
-impl<'a> CastConfigBuilder<'a> {
-    fn new(cevio: &'a Cevio) -> Self {
-        Self { cevio }
-    }
+    #[doc = "音の大きさ（0～100）"]
+    pub volume: Option<u8>,
 
-    /// 音の大きさ（0～100）を設定します。
-    ///
-    pub fn volume(self, volume: u32) -> Result<Self> {
-        self.cevio.set_volume(volume)?;
-        Ok(self)
-    }
+    #[doc = "話す速さ（0～100）"]
+    pub speed: Option<u8>,
 
-    /// 話す速さ（0～100）を設定します。
-    ///
-    pub fn speed(self, speed: u32) -> Result<Self> {
-        self.cevio.set_speed(speed)?;
-        Ok(self)
-    }
+    #[doc = "音の高さ（0～100）"]
+    pub tone: Option<u8>,
 
-    /// 音の高さ（0～100）を設定します。
-    ///
-    pub fn tone(self, tone: u32) -> Result<Self> {
-        self.cevio.set_tone(tone)?;
-        Ok(self)
-    }
+    #[doc = "抑揚（0～100）"]
+    pub tone_scale: Option<u8>,
 
-    /// 抑揚（0～100）を設定します。
-    ///
-    pub fn tone_scale(self, tone_scale: u32) -> Result<Self> {
-        self.cevio.set_tone_scale(tone_scale)?;
-        Ok(self)
-    }
-
-    /// 声質（0～100）を設定します。
-    ///
-    pub fn alpha(self, alpha: u32) -> Result<Self> {
-        self.cevio.set_alpha(alpha)?;
-        Ok(self)
-    }
+    #[doc = "声質（0～100）"]
+    pub alpha: Option<u8>,
 }
 
 #[derive(Debug)]
 pub struct Component {
     component: ITalkerComponent2,
 
-    /// 識別子を取得します。
-    ///
+    #[doc = "識別子を取得します"]
     pub id: String,
 
-    /// 感情の名前を取得します。
-    ///
+    #[doc = "感情の名前を取得します"]
     pub name: String,
 }
 
 impl Component {
-    fn new(component: ITalkerComponent2, id: String, name: String) -> Self {
+    fn new(component: ITalkerComponent2, id: &str, name: &str) -> Self {
         Self {
             component,
-            id,
-            name,
+            id: id.to_string(),
+            name: name.to_string(),
         }
     }
 
     /// 感情の値（0～100）を取得します。
     ///
-    pub fn value(&self) -> Result<u32> {
-        Ok(unsafe { self.component.Value() }?)
+    pub fn value(&self) -> Result<u8> {
+        Ok(unsafe { self.component.Value() }? as u8)
     }
 
     /// 感情の値（0～100）を設定します。
     ///
-    pub fn set_value(&self, value: u32) -> Result<()> {
-        Ok(unsafe { self.component.SetValue(value) }?)
+    pub fn set_value(&self, value: u8) -> Result<()> {
+        Ok(unsafe { self.component.SetValue(value as u32) }?)
     }
 }
 
@@ -414,15 +402,12 @@ impl SpeakingState {
 
 #[derive(Debug)]
 pub struct PhonemeData {
-    /// 音素を取得します。
-    ///
+    #[doc = "音素"]
     pub phoneme: String,
 
-    /// 開始時間を取得します。単位は秒。
-    ///
+    #[doc = "開始時間 (秒)"]
     pub start_time: f64,
 
-    /// 終了時間を取得します。単位は秒。
-    ///
+    #[doc = "終了時間 (秒)"]
     pub end_time: f64,
 }

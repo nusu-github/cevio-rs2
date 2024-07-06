@@ -19,13 +19,16 @@ mod tests {
         // 【CeVIO AI】起動
         cevio.start(false)?;
 
-        cevio
+        let cast = CastBuilder::default()
             // キャスト設定
-            .configure_cast("さとうささら")?
-            // （例）音量設定
-            .volume(100)?
-            // （例）抑揚設定
-            .tone_scale(100)?;
+            .cast("さとうささら")
+            // 音量設定
+            .volume(100)
+            // 抑揚設定
+            .tone_scale(100)
+            .build()?;
+
+        cevio.apply_cast(&cast)?;
 
         // （例）再生
         let e = cevio.speak("こんにちは")?;
@@ -55,13 +58,16 @@ mod tests {
             let start = Instant::now();
             println!("{:?}", component);
 
-            cevio
+            let cast = CastBuilder::default()
                 // キャスト設定
-                .configure_cast(&component)?
+                .cast(component)
                 // （例）音量設定
-                .volume(100)?
+                .volume(100)
                 // （例）抑揚設定
-                .tone_scale(100)?;
+                .tone_scale(100)
+                .build()?;
+
+            cevio.apply_cast(&cast)?;
 
             // 感情パラメータ取得
             let components = cevio.components()?;
