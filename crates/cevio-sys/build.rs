@@ -4,15 +4,17 @@ fn main() {
 
     windows_bindgen::bindgen([
         "--in",
+        "default",
+        "--in",
         ".windows/winmd/CeVIO.Talk.RemoteService2.winmd",
         "--out",
         "src/bindings.rs",
         "--filter",
         "CeVIO.Talk.RemoteService2",
-        "--config",
-        "implement",
-        "--config",
-        "vtbl",
-    ])
-    .unwrap();
+        "--flat",
+        "--reference",
+        "windows,skip-root,Windows.Win32.System.Com",
+        "--reference",
+        "windows,skip-root,Windows.Win32.Foundation",
+    ]);
 }

@@ -10,8 +10,7 @@ default = []
 
 [dependencies]
 anyhow = { workspace = true }
-derive_builder = "0.20.0"
+derive_builder = "0.20.2"
 windows = { workspace = true }
-windows-core = { workspace = true }
 
 cevio-sys = { path = "../cevio-sys" }
