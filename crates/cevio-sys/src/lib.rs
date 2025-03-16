@@ -1,4 +1,4 @@
-pub use bindings::Talk::RemoteService2::{
+pub use bindings::{
     IPhonemeData2, IPhonemeDataArray2, IServiceControl2, IServiceControl2V40,
     IServiceControl2V40Part, ISpeakingState2, IStringArray2, ITalker2, ITalker2V40,
     ITalker2V40Part, ITalkerComponent2, ITalkerComponentArray2, PhonemeData2, PhonemeDataArray2,
