@@ -5,7 +5,6 @@ fn main() {
     windows_bindgen::bindgen([
         "--in",
         "default",
-        "--in",
         ".windows/winmd/CeVIO.Talk.RemoteService2.winmd",
         "--out",
         "src/bindings.rs",
