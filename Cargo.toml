@@ -19,4 +19,4 @@ windows = { version = "^0.60.0", features = [
     "Win32_System_Variant"
 ] }
 windows-core = "^0.60.0"
-windows-bindgen = "^0.60.0"
+windows-bindgen = "^0.62.0"
