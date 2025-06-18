@@ -8,7 +8,7 @@ CeVIO AI の非公式 Rust バインディング
 
 ```toml
 [dependencies]
-cevio-ai = { version = "0.2.1" }
+cevio-ai = { version = "0.2.0" }
 ```
 
 ### 基本的な使用例
@@ -53,27 +53,64 @@ fn main() -> Result<()> {
 }
 ```
 
-## API ドキュメント
+### 設定を使った初期化
 
-詳細な API ドキュメントについては、プロジェクトディレクトリで`cargo doc --open`を実行してください。
+```rust
+use cevio_ai::*;
 
-## アーキテクチャ
+fn main() -> Result<()> {
+    let config = CevioConfigBuilder::default()
+        .start_host(true)  // 自動起動
+        .initial_cast("さとうささら")
+        .initial_volume(Volume::new(80)?)
+        .initial_speed(Speed::new(60)?)
+        .build()?;
 
-本ライブラリは 2 つのクレートで構成されています：
+    let cevio = CevioAI::with_config(config)?;
 
-- **`cevio-ai-sys`**: 低レベル FFI バインディング（自動生成）
-- **`cevio-ai`**: 高レベル安全 API
+    // 既に設定済みなのですぐに使用可能
+    let state = cevio.speak("こんにちは")?;
+    state.wait()?;
+    Ok(())
+}
+```
+
+### プリセットを使用した音声設定
+
+```rust
+use cevio_ai::*;
+
+fn main() -> Result<()> {
+    let cevio = CevioAI::new()?;
+    cevio.start(false)?;
+
+    // エネルギッシュなプリセットを適用
+    let cast = CastBuilder::default()
+        .cast("さとうささら")
+        .from_preset(VoicePreset::Energetic)
+        .build()?;
+
+    cevio.apply_cast(&cast)?;
+
+    // 利用可能なプリセット:
+    // - Normal: 標準的な設定
+    // - Fast: 早口
+    // - Slow: ゆっくり
+    // - HighPitch: 高い声
+    // - LowPitch: 低い声
+    // - Energetic: 元気な声
+    // - Calm: 落ち着いた声
+
+    Ok(())
+}
+```
 
 ## ライセンス
 
 次のいずれかのライセンス:
 
-- [Apache License, Version 2.0](LICENSE-APACHE)
-- [MIT license](LICENSE-MIT)
-
-## 貢献
-
-貢献を歓迎いたします！プルリクエストを気軽に送ってください。
+- [Apache License, Version 2.0](https://github.com/nusu-github/cevio-rs2/blob/master/LICENSE-APACHE)
+- [MIT license](https://github.com/nusu-github/cevio-rs2/blob/master/LICENSE-MIT)
 
 ## 参考リンク
 
