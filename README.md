@@ -11,35 +11,95 @@ CeVIO AIの非公式Rustバインディング
 cevio = { git = "https://github.com/nusu-github/cevio-rs2" }
 ```
 
-基本的な使用例：
+### 基本的な使用例
 
 ```rust
-use anyhow::Result;
-use cevio::{Cevio, CloseMode};
+use cevio::*;
 
 fn main() -> Result<()> {
+    // CeVIOインスタンスを作成
     let cevio = Cevio::new()?;
 
     // CeVIO AIを起動
     cevio.start(false)?;
 
-    // キャストと音声パラメータを設定
+    // 音声設定（型安全なパラメータ）
     let cast = CastBuilder::default()
         .cast("さとうささら")
-        .volume(100)
+        .volume(Volume::new(100).unwrap())
+        .speed(Speed::new(50).unwrap())
+        .tone(Tone::new(50).unwrap())
         .build()?;
+
     cevio.apply_cast(&cast)?;
 
-    // 音声を生成
+    // 音声合成と再生
     let state = cevio.speak("こんにちは")?;
     state.wait()?;
 
     // 音素データを取得
     let phonemes = cevio.phonemes("はじめまして")?;
-    println!("{:?}", phonemes);
+    for phoneme in &phonemes {
+        println!("{}: {:.2}s - {:.2}s",
+                 phoneme.phoneme, phoneme.start_time, phoneme.end_time);
+    }
 
-    // CeVIO AIを終了
+    // WAVファイルに出力
+    cevio.output_wave_to_file("さようなら", "output.wav")?;
+
+    // 終了
     cevio.close(CloseMode::Interactive)?;
+    Ok(())
+}
+```
+
+### 設定を使った初期化
+
+```rust
+use cevio::*;
+
+fn main() -> Result<()> {
+    let config = CevioConfigBuilder::default()
+        .start_host(true)  // 自動起動
+        .initial_cast("さとうささら")
+        .initial_volume(Volume::new(80)?)
+        .initial_speed(Speed::new(60)?)
+        .build()?;
+
+    let cevio = Cevio::with_config(config)?;
+
+    // 既に設定済みなのですぐに使用可能
+    let state = cevio.speak("こんにちは")?;
+    state.wait()?;
+    Ok(())
+}
+```
+
+### プリセットを使用した音声設定
+
+```rust
+use cevio::*;
+
+fn main() -> Result<()> {
+    let cevio = Cevio::new()?;
+    cevio.start(false)?;
+
+    // エネルギッシュなプリセットを適用
+    let cast = CastBuilder::default()
+        .cast("さとうささら")
+        .from_preset(VoicePreset::Energetic)
+        .build()?;
+
+    cevio.apply_cast(&cast)?;
+
+    // 利用可能なプリセット:
+    // - Normal: 標準的な設定
+    // - Fast: 早口
+    // - Slow: ゆっくり
+    // - HighPitch: 高い声
+    // - LowPitch: 低い声
+    // - Energetic: 元気な声
+    // - Calm: 落ち着いた声
 
     Ok(())
 }
@@ -49,16 +109,27 @@ fn main() -> Result<()> {
 
 詳細なAPIドキュメントについては、プロジェクトディレクトリで`cargo doc --open`を実行してください。
 
+## アーキテクチャ
+
+本ライブラリは2つのクレートで構成されています：
+
+- **`cevio-sys`**: 低レベルFFIバインディング（自動生成）
+- **`cevio`**: 高レベル安全API
+
 ## 依存クレート
 
-このプロジェクトは以下の依存クレートを使用しています：
-
-- `anyhow`: エラーハンドリング
-- `windows-rs`: Windows APIバインディング
+- `bounded-integer`: 型安全な範囲制限付き整数
+- `derive_builder`: Builderパターンの自動生成
+- `parking_lot`: 効率的な同期プリミティブ
+- `thiserror`: エラー型の生成
+- `windows`: Windows バインディング
 
 ## ライセンス
 
-- [Apache License, Version 2.0](LICENSE)
+次のいずれかのライセンス:
+
+- [Apache License, Version 2.0](LICENSE-APACHE)
+- [MIT license](LICENSE-MIT)
 
 ## 貢献
 

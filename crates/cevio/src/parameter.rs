@@ -18,6 +18,9 @@
 
 use bounded_integer::bounded_integer;
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 bounded_integer! {
     /// 音の大きさ（0～100）
     pub struct Volume { 0..=100 }
@@ -45,6 +48,7 @@ bounded_integer! {
 
 /// 音声パラメータのプリセット
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum VoicePreset {
     /// 標準設定（すべて50）
     Normal,

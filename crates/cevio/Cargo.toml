@@ -5,10 +5,15 @@ authors.workspace = true
 edition.workspace = true
 license.workspace = true
 
+[features]
+default = []
+serde = ["dep:serde", "bounded-integer/serde1"]
+
 [dependencies]
 bounded-integer = { workspace = true }
 derive_builder = { workspace = true }
 parking_lot = { workspace = true }
+serde = { workspace = true, optional = true }
 thiserror = { workspace = true }
 
 windows = { workspace = true }

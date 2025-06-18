@@ -1,6 +1,6 @@
-//! # `CeVIO` AI Rust API
+//! # `CeVIO AI` Rust API
 //!
-//! `CeVIO` `AIの機能をRustから安全に利用するためのライブラリです`。
+//! `CeVIO AI`の機能をRustから安全に利用するためのライブラリです。
 //!
 //! ## 主な機能
 //!
