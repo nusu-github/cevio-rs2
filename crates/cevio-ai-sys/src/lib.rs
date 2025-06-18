@@ -1,3 +1,21 @@
+//! CeVIO AI の低レベル FFI バインディング
+//!
+//! このクレートは、日本語音声合成ソフトウェア CeVIO AI 用の生の Windows COM インターフェースバインディングを提供します。
+//! これらのバインディングは CeVIO.Talk.RemoteService2.winmd メタデータファイルから自動生成されます。
+//!
+//! # プラットフォームサポート
+//!
+//! このクレートは Windows COM インターフェースに依存するため、**Windows 専用**です。
+//!
+//! # 使用方法
+//!
+//! このクレートは生の COM インターフェースを公開します。より高レベルで安全な API については、代わりに `cevio-ai` クレートの使用を検討してください。
+//!
+//! # 安全性について
+//!
+//! このクレートが公開する COM インターフェースは本質的に unsafe です。`unsafe_send` フィーチャが有効な場合、
+//! 特定のインターフェースが `Mutex` でラップされることを前提として `Send` が実装されます。
+
 pub use bindings::CeVIO::Talk::RemoteService2::{
     IPhonemeData2, IPhonemeDataArray2, IServiceControl2, IServiceControl2V40,
     IServiceControl2V40Part, ISpeakingState2, IStringArray2, ITalker2, ITalker2V40,

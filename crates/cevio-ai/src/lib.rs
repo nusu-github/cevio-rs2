@@ -1,14 +1,6 @@
-//! # `CeVIO AI` Rust API
+//! # CeVIO AI Rust API
 //!
-//! `CeVIO AI`の機能をRustから安全に利用するためのライブラリです。
-//!
-//! ## 主な機能
-//!
-//! - **音声合成**: テキストから音声を生成
-//! - **音声パラメータ制御**: 音量、速度、音程、抑揚、声質の調整
-//! - **キャスト管理**: 利用可能なキャストの一覧取得と切り替え
-//! - **音素データ取得**: テキストの音素情報とタイミングを取得
-//! - **WAVファイル出力**: 音声をファイルに保存
+//! CeVIO AIの機能をRustから安全に利用するためのライブラリです。
 //!
 //! ## 基本的な使用方法
 //!
@@ -17,7 +9,7 @@
 //!
 //! fn main() -> Result<()> {
 //!     // CeVIOインスタンスを作成
-//!     let cevio = Cevio::new()?;
+//!     let cevio = CevioAI::new()?;
 //!     
 //!     // CeVIO AIを起動
 //!     cevio.start(false)?;
@@ -46,13 +38,13 @@
 //! use cevio_ai::*;
 //!
 //! fn main() -> Result<()> {
-//!     let config = CevioConfigBuilder::default()
+//!     let config = CevioAIConfigBuilder::default()
 //!         .start_host(true)
 //!         .initial_cast("さとうささら")
 //!         .initial_volume(Volume::new(80)?)
 //!         .build()?;
 //!         
-//!     let cevio = Cevio::with_config(config)?;
+//!     let cevio = CevioAI::with_config(config)?;
 //!     
 //!     // 既に設定済みなのですぐに使用可能
 //!     let state = cevio.speak("こんにちは")?;
@@ -82,7 +74,7 @@ mod tests {
     // 公式のサンプル
     // https://cevio.jp/guide/cevio_ai/interface/com/
     fn minimal() -> Result<()> {
-        let cevio = Cevio::new()?;
+        let cevio = CevioAI::new()?;
 
         // 【CeVIO AI】起動
         cevio.start(false)?;
@@ -119,7 +111,7 @@ mod tests {
     #[test]
     #[serial]
     fn full() -> Result<()> {
-        let cevio = Cevio::new()?;
+        let cevio = CevioAI::new()?;
 
         // 【CeVIO AI】起動
         cevio.start(false)?;
@@ -167,14 +159,14 @@ mod tests {
     #[serial]
     fn test_builder_patterns() -> Result<()> {
         // CevioConfigのテスト
-        let config = CevioConfigBuilder::default()
+        let config = CevioAIConfigBuilder::default()
             .start_host(true)
             .no_wait(false)
             .initial_cast("さとうささら")
             .initial_volume(Volume::new(80).unwrap())
             .build()?;
 
-        let _cevio = Cevio::with_config(config)?;
+        let _cevio = CevioAI::with_config(config)?;
 
         // CastBuilderの新しいメソッドのテスト
         let _cast_defaults = CastBuilder::default()

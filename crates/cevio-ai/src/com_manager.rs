@@ -6,10 +6,10 @@ use windows::{
     },
 };
 
-use parking_lot::{const_mutex, Mutex};
+use parking_lot::Mutex;
 
 static COM_MANAGER: std::sync::LazyLock<Mutex<ComManager>> =
-    std::sync::LazyLock::new(|| const_mutex(ComManager::new()));
+    std::sync::LazyLock::new(|| Mutex::new(ComManager::new()));
 
 struct ComManager {
     ref_count: usize,

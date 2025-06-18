@@ -1,6 +1,6 @@
-//! `CeVIO AI` APIのメイン実装
+//! CeVIO AI APIのメイン実装
 //!
-//! このモジュールは`CeVIO AI`との通信を行うメインの構造体と機能を提供します。
+//! このモジュールはCeVIO AIとの通信を行うメインの構造体と機能を提供します。
 //! COM（Component Object Model）を使用してCeVIO AIと安全に通信し、
 //! 音声合成、パラメータ制御、キャスト管理などの機能を提供します。
 
@@ -24,7 +24,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     com_manager::ComGuard,
-    error::{CevioError, Result},
+    error::{CevioAIError, Result},
     parameter::{Alpha, Speed, Tone, ToneScale, VoicePreset, Volume},
 };
 use cevio_ai_sys::{
@@ -32,17 +32,17 @@ use cevio_ai_sys::{
     Talker2V40,
 };
 
-/// `CeVIO AI`初期化設定
+/// CeVIO AI初期化設定
 ///
-/// `CeVIO AI`の初期化時に使用する設定を定義します。
+/// CeVIO AIの初期化時に使用する設定を定義します。
 /// ビルダーパターンで構築可能です。
 ///
 /// # Example
 ///
 /// ```no_run
-/// use cevio_ai::{CevioConfigBuilder, Volume, Speed};
+/// use cevio_ai::{CevioAIConfigBuilder, Volume, Speed};
 ///
-/// let config = CevioConfigBuilder::default()
+/// let config = CevioAIConfigBuilder::default()
 ///     .start_host(true)
 ///     .initial_cast("さとうささら")
 ///     .initial_volume(Volume::new(80).unwrap())
@@ -53,14 +53,14 @@ use cevio_ai_sys::{
 #[derive(Default, Builder, Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[builder(setter(into, strip_option), default)]
-pub struct CevioConfig {
-    /// `CeVIO AI`を自動起動するか
+pub struct CevioAIConfig {
+    /// CeVIO AIを自動起動するか
     ///
     /// `true`の場合、CeVIO AIが起動していなければ自動的に起動します。
     /// 既に起動済みの場合は何もしません。
     pub start_host: bool,
 
-    /// `起動時に待機しない（start_hostがtrueの場合のみ有効`）
+    /// 起動時に待機しない（start_hostがtrueの場合のみ有効）
     ///
     /// - `true`: 起動のみ行い、アクセス可能になるのを待たずに戻ります
     /// - `false`: 起動後、外部からアクセス可能になるまで待機します
@@ -91,13 +91,13 @@ pub struct CevioConfig {
     pub operation_timeout: Option<Duration>,
 }
 
-/// `CeVIO AI`終了モード
+/// CeVIO AI終了モード
 ///
-/// `CeVIO AI`に終了を要求する際の処理モードを指定します。
+/// CeVIO AIに終了を要求する際の処理モードを指定します。
 pub enum CloseMode {
     /// 編集中の場合、保存や終了キャンセルが可能
     ///
-    /// `CeVIO AI`が編集中の場合、ユーザーに保存確認ダイアログが表示され、
+    /// CeVIO AIが編集中の場合、ユーザーに保存確認ダイアログが表示され、
     /// 保存するか終了をキャンセルできます。
     Interactive = 0,
 
@@ -107,7 +107,7 @@ pub enum CloseMode {
     Force = 1,
 }
 
-/// `StartHostの結果コード`
+/// StartHostの結果コード
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 enum HostStartResult {
@@ -136,9 +136,9 @@ impl HostStartResult {
     }
 }
 
-/// `CeVIO AI`制御インターフェース
+/// CeVIO AI制御インターフェース
 ///
-/// `CeVIO AI`と通信するためのメインインターフェースです。
+/// CeVIO AIと通信するためのメインインターフェースです。
 /// トーク機能（音声合成）と制御機能を提供します。
 ///
 /// # Thread Safety
@@ -148,7 +148,7 @@ impl HostStartResult {
 /// # Example
 ///
 /// ```no_run
-/// use cevio_ai::{Cevio, CastBuilder};
+/// use cevio_ai::{CevioAI, CastBuilder};
 ///
 /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// // CeVIO AIの初期化
@@ -178,10 +178,10 @@ pub struct CevioAI {
 }
 
 impl CevioAI {
-    /// `CeVIO AI`インスタンスを作成します。
+    /// CeVIO AIインスタンスを作成します。
     ///
-    /// `COM初期化とCeVIO` AIのCOMオブジェクトを作成します。
-    /// `CeVIO AI`が起動していない場合でもインスタンスは作成されます。
+    /// COM初期化とCeVIO AIのCOMオブジェクトを作成します。
+    /// CeVIO AIが起動していない場合でもインスタンスは作成されます。
     ///
     /// # Errors
     ///
@@ -203,9 +203,9 @@ impl CevioAI {
         }
     }
 
-    /// `設定を指定してCeVIO` AIインスタンスを作成します。
+    /// 設定を指定してCeVIO AIインスタンスを作成します。
     ///
-    /// `指定された設定に基づいてCeVIO` AIを初期化します。
+    /// 指定された設定に基づいてCeVIO AIを初期化します。
     ///
     /// # Arguments
     ///
@@ -214,9 +214,9 @@ impl CevioAI {
     /// # Errors
     ///
     /// - インスタンス作成に失敗した場合
-    /// - `CeVIO AI`起動に失敗した場合（`start_host`が`true`の場合）
+    /// - CeVIO AI起動に失敗した場合（`start_host`が`true`の場合）
     /// - パラメータ設定に失敗した場合
-    pub fn with_config(config: CevioConfig) -> Result<Self> {
+    pub fn with_config(config: CevioAIConfig) -> Result<Self> {
         let cevio = Self::new()?;
 
         if config.start_host {
@@ -250,7 +250,7 @@ impl CevioAI {
         Ok(cevio)
     }
 
-    /// `CeVIO AI`を起動します。
+    /// CeVIO AIを起動します。
     ///
     /// 起動済みの場合は何もしません。
     ///
@@ -261,22 +261,22 @@ impl CevioAI {
     ///
     /// # Errors
     ///
-    /// - `CevioError::InstallUnknown` - インストール状態が不明
-    /// - `CevioError::ExecutableNotFound` - 実行ファイルが見つからない
-    /// - `CevioError::ProcessStartFailed` - プロセスの起動に失敗
-    /// - `CevioError::AppTerminated` - アプリケーション起動後、エラーにより終了
+    /// - `CevioAIError::InstallUnknown` - インストール状態が不明
+    /// - `CevioAIError::ExecutableNotFound` - 実行ファイルが見つからない
+    /// - `CevioAIError::ProcessStartFailed` - プロセスの起動に失敗
+    /// - `CevioAIError::AppTerminated` - アプリケーション起動後、エラーにより終了
     pub fn start(&self, no_wait: bool) -> Result<()> {
         let result = unsafe { self.service.lock().StartHost(VARIANT_BOOL::from(no_wait)) }?;
         match HostStartResult::from_i32(result) {
             HostStartResult::Succeeded => Ok(()),
-            HostStartResult::NotRegistered => Err(CevioError::InstallUnknown),
-            HostStartResult::FileNotFound => Err(CevioError::ExecutableNotFound),
-            HostStartResult::StartingFailed => Err(CevioError::ProcessStartFailed),
-            HostStartResult::HostError => Err(CevioError::AppTerminated),
+            HostStartResult::NotRegistered => Err(CevioAIError::InstallUnknown),
+            HostStartResult::FileNotFound => Err(CevioAIError::ExecutableNotFound),
+            HostStartResult::StartingFailed => Err(CevioAIError::ProcessStartFailed),
+            HostStartResult::HostError => Err(CevioAIError::AppTerminated),
         }
     }
 
-    /// `CeVIO AI`に終了を要求します。
+    /// CeVIO AIに終了を要求します。
     ///
     /// # Arguments
     ///
@@ -599,6 +599,7 @@ impl CevioAI {
 /// ```no_run
 /// use cevio_ai::{CastBuilder, Volume, Speed, VoicePreset};
 ///
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// // 個別にパラメータを設定
 /// let cast = CastBuilder::default()
 ///     .cast("さとうささら")
@@ -620,6 +621,9 @@ impl CevioAI {
 ///     .from_preset(VoicePreset::Happy)
 ///     .build()
 ///     .unwrap();
+///
+/// # Ok(())
+/// # }
 /// ```
 #[derive(Default, Builder, Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -706,10 +710,10 @@ impl Component {
     ///
     /// # Errors
     ///
-    /// 値が100を超える場合は `CevioError::InvalidParameter` を返します。
+    /// 値が100を超える場合は `CevioAIError::InvalidParameter` を返します。
     pub fn set_value(&self, value: u8) -> Result<()> {
         if value > 100 {
-            return Err(CevioError::InvalidParameter(format!(
+            return Err(CevioAIError::InvalidParameter(format!(
                 "Component value must be 0-100, got {value}"
             )));
         }

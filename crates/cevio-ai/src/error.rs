@@ -1,20 +1,20 @@
 //! エラー処理関連の型定義
 //!
 //! このモジュールは、CeVIO APIで発生する可能性のあるエラーを定義します。
-//! すべてのエラーは`CevioError`列挙型にまとめられており、
+//! すべてのエラーは`CevioAIError`列挙型にまとめられており、
 //! `thiserror`クレートを使用して詳細なエラーメッセージを提供します。
 
-use crate::{CastBuilderError, CevioConfigBuilderError};
+use crate::{CastBuilderError, CevioAIConfigBuilderError};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum CevioError {
+pub enum CevioAIError {
     #[error("Windows API error: {0}")]
     Windows(#[from] windows::core::Error),
     #[error("BuilderError error: {0}")]
     BuilderError(#[from] CastBuilderError),
     #[error("ConfigBuilderError error: {0}")]
-    ConfigBuilderError(#[from] CevioConfigBuilderError),
+    ConfigBuilderError(#[from] CevioAIConfigBuilderError),
     #[error("Installation state is unknown")]
     InstallUnknown,
     #[error("Executable not found")]
@@ -27,4 +27,4 @@ pub enum CevioError {
     InvalidParameter(String),
 }
 
-pub type Result<T> = std::result::Result<T, CevioError>;
+pub type Result<T> = std::result::Result<T, CevioAIError>;
