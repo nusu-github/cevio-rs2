@@ -4,9 +4,15 @@ resolver = "2"
 
 [workspace.package]
 version = "0.2.0"
-authors = ["nusu-"]
+authors = ["nusu-github"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
+description = "Rust bindings for CeVIO AI text-to-speech software"
+repository = "https://github.com/nusu-github/cevio-rs2"
+homepage = "https://github.com/nusu-github/cevio-rs2"
+documentation = "https://docs.rs/cevio-ai"
+keywords = ["cevio", "tts", "text-to-speech", "speech-synthesis", "windows"]
+categories = ["multimedia::audio", "api-bindings", "os::windows-apis"]
 
 [workspace.dependencies]
 bounded-integer = { version = "0.5", features = ["macro"] }

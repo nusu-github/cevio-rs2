@@ -1,6 +1,6 @@
-//! `CeVIO` AI APIのメイン実装
+//! `CeVIO AI` APIのメイン実装
 //!
-//! `このモジュールはCeVIO` AIとの通信を行うメインの構造体と機能を提供します。
+//! このモジュールは`CeVIO AI`との通信を行うメインの構造体と機能を提供します。
 //! COM（Component Object Model）を使用してCeVIO AIと安全に通信し、
 //! 音声合成、パラメータ制御、キャスト管理などの機能を提供します。
 
@@ -27,20 +27,20 @@ use crate::{
     error::{CevioError, Result},
     parameter::{Alpha, Speed, Tone, ToneScale, VoicePreset, Volume},
 };
-use cevio_sys::{
+use cevio_ai_sys::{
     IServiceControl2V40, ISpeakingState2, ITalker2V40, ITalkerComponent2, ServiceControl2V40,
     Talker2V40,
 };
 
-/// `CeVIO` AI初期化設定
+/// `CeVIO AI`初期化設定
 ///
-/// `CeVIO` AIの初期化時に使用する設定を定義します。
+/// `CeVIO AI`の初期化時に使用する設定を定義します。
 /// ビルダーパターンで構築可能です。
 ///
 /// # Example
 ///
 /// ```no_run
-/// use cevio::{CevioConfigBuilder, Volume, Speed};
+/// use cevio_ai::{CevioConfigBuilder, Volume, Speed};
 ///
 /// let config = CevioConfigBuilder::default()
 ///     .start_host(true)
@@ -54,7 +54,7 @@ use cevio_sys::{
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[builder(setter(into, strip_option), default)]
 pub struct CevioConfig {
-    /// `CeVIO` AIを自動起動するか
+    /// `CeVIO AI`を自動起動するか
     ///
     /// `true`の場合、CeVIO AIが起動していなければ自動的に起動します。
     /// 既に起動済みの場合は何もしません。
@@ -91,13 +91,13 @@ pub struct CevioConfig {
     pub operation_timeout: Option<Duration>,
 }
 
-/// `CeVIO` AI終了モード
+/// `CeVIO AI`終了モード
 ///
-/// `CeVIO` AIに終了を要求する際の処理モードを指定します。
+/// `CeVIO AI`に終了を要求する際の処理モードを指定します。
 pub enum CloseMode {
     /// 編集中の場合、保存や終了キャンセルが可能
     ///
-    /// `CeVIO` AIが編集中の場合、ユーザーに保存確認ダイアログが表示され、
+    /// `CeVIO AI`が編集中の場合、ユーザーに保存確認ダイアログが表示され、
     /// 保存するか終了をキャンセルできます。
     Interactive = 0,
 
@@ -136,9 +136,9 @@ impl HostStartResult {
     }
 }
 
-/// `CeVIO` AI制御インターフェース
+/// `CeVIO AI`制御インターフェース
 ///
-/// `CeVIO` AIと通信するためのメインインターフェースです。
+/// `CeVIO AI`と通信するためのメインインターフェースです。
 /// トーク機能（音声合成）と制御機能を提供します。
 ///
 /// # Thread Safety
@@ -148,11 +148,11 @@ impl HostStartResult {
 /// # Example
 ///
 /// ```no_run
-/// use cevio::{Cevio, CastBuilder};
+/// use cevio_ai::{Cevio, CastBuilder};
 ///
 /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// // CeVIO AIの初期化
-/// let cevio = Cevio::new()?;
+/// let cevio = CevioAI::new()?;
 ///
 /// // CeVIO AIを起動
 /// cevio.start(false)?;
@@ -171,17 +171,17 @@ impl HostStartResult {
 /// # }
 /// ```
 #[derive(Clone)]
-pub struct Cevio {
+pub struct CevioAI {
     service: Arc<Mutex<IServiceControl2V40>>,
     talker: Arc<Mutex<ITalker2V40>>,
     _com_guard: Arc<ComGuard>,
 }
 
-impl Cevio {
-    /// `CeVIO` AIインスタンスを作成します。
+impl CevioAI {
+    /// `CeVIO AI`インスタンスを作成します。
     ///
     /// `COM初期化とCeVIO` AIのCOMオブジェクトを作成します。
-    /// `CeVIO` AIが起動していない場合でもインスタンスは作成されます。
+    /// `CeVIO AI`が起動していない場合でもインスタンスは作成されます。
     ///
     /// # Errors
     ///
@@ -214,7 +214,7 @@ impl Cevio {
     /// # Errors
     ///
     /// - インスタンス作成に失敗した場合
-    /// - `CeVIO` AI起動に失敗した場合（`start_host`が`true`の場合）
+    /// - `CeVIO AI`起動に失敗した場合（`start_host`が`true`の場合）
     /// - パラメータ設定に失敗した場合
     pub fn with_config(config: CevioConfig) -> Result<Self> {
         let cevio = Self::new()?;
@@ -250,7 +250,7 @@ impl Cevio {
         Ok(cevio)
     }
 
-    /// `CeVIO` AIを起動します。
+    /// `CeVIO AI`を起動します。
     ///
     /// 起動済みの場合は何もしません。
     ///
@@ -276,7 +276,7 @@ impl Cevio {
         }
     }
 
-    /// `CeVIO` AIに終了を要求します。
+    /// `CeVIO AI`に終了を要求します。
     ///
     /// # Arguments
     ///
@@ -465,9 +465,9 @@ impl Cevio {
     /// # Example
     ///
     /// ```no_run
-    /// # use cevio::Cevio;
+    /// # use cevio_ai::CevioAI;
     /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let cevio = Cevio::new()?;
+    /// # let cevio = CevioAI::new()?;
     /// let state = cevio.speak("こんにちは")?;
     /// state.wait()?; // 再生終了まで待機
     /// # Ok(())
@@ -597,7 +597,7 @@ impl Cevio {
 /// # Example
 ///
 /// ```no_run
-/// use cevio::{CastBuilder, Volume, Speed, VoicePreset};
+/// use cevio_ai::{CastBuilder, Volume, Speed, VoicePreset};
 ///
 /// // 個別にパラメータを設定
 /// let cast = CastBuilder::default()

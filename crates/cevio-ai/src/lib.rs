@@ -13,7 +13,7 @@
 //! ## 基本的な使用方法
 //!
 //! ```rust,no_run
-//! use cevio::*;
+//! use cevio_ai::*;
 //!
 //! fn main() -> Result<()> {
 //!     // CeVIOインスタンスを作成
@@ -43,7 +43,7 @@
 //! ## 設定付きでの初期化
 //!
 //! ```rust,no_run
-//! use cevio::*;
+//! use cevio_ai::*;
 //!
 //! fn main() -> Result<()> {
 //!     let config = CevioConfigBuilder::default()

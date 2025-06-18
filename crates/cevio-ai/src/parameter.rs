@@ -6,7 +6,7 @@
 //! ## 使用例
 //!
 //! ```rust
-//! use cevio::*;
+//! use cevio_ai::*;
 //!
 //! // 型安全なパラメータ作成
 //! let volume = Volume::new(80).unwrap();

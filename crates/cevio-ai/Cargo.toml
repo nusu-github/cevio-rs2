@@ -1,9 +1,15 @@
 [package]
-name = "cevio"
+name = "cevio-ai"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
+description.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [features]
 default = []
@@ -18,7 +24,7 @@ thiserror = { workspace = true }
 
 windows = { workspace = true }
 
-cevio-sys = { path = "../cevio-sys", features = ["unsafe_send"] }
+cevio-ai-sys = { path = "../cevio-ai-sys", features = ["unsafe_send"] }
 
 [dev-dependencies]
 serial_test = "3.2"

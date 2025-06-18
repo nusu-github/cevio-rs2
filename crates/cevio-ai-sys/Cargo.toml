@@ -1,0 +1,23 @@
+[package]
+name = "cevio-ai-sys"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Low-level FFI bindings for CeVIO AI COM interface"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/cevio-ai-sys"
+keywords = ["cevio", "ffi", "com", "bindings", "windows"]
+categories = ["external-ffi-bindings", "os::windows-apis"]
+
+[features]
+default = []
+unsafe_send = []
+
+[build-dependencies]
+windows-bindgen = { workspace = true }
+
+[dependencies]
+windows = { workspace = true }
+windows-core = { workspace = true }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.Windows.WinmdGenerator/0.63.31-preview">
+    <PropertyGroup Label="Globals">
+        <OutputWinmd>../.windows/winmd/CeVIO.Talk.RemoteService2.winmd</OutputWinmd>
+        <WinmdVersion>255.255.255.255</WinmdVersion>
+        <AdditionalIncludes>$(CompiledHeadersDir)</AdditionalIncludes>
+        <GenerateAssemblyVersionInfo>false</GenerateAssemblyVersionInfo>
+    </PropertyGroup>
+    <ItemGroup>
+        <Idls Include="CeVIO.Talk.RemoteService2.IDL"/>
+        <Headers Include="$(CompiledHeadersDir)\CeVIO.Talk.RemoteService2.h"/>
+        <Partition Include="main.cpp">
+            <TraverseFiles>@(Headers)</TraverseFiles>
+            <Namespace>CeVIO.Talk.RemoteService2</Namespace>
+            <ExcludeFromCrossarch>true</ExcludeFromCrossarch>
+        </Partition>
+    </ItemGroup>
+</Project>
