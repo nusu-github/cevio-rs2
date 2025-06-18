@@ -24,7 +24,7 @@ thiserror = { workspace = true }
 
 windows = { workspace = true }
 
-cevio-ai-sys = { version = "*", path = "../cevio-ai-sys", features = ["unsafe_send"] }
+cevio-ai-sys = { version = "0", path = "../cevio-ai-sys", features = ["unsafe_send"] }
 
 [dev-dependencies]
 serial_test = "3.2"
