@@ -1,4 +1,4 @@
-# cevio-rs2
+# cevio-ai
 
 CeVIO AIの非公式Rustバインディング
 
@@ -8,13 +8,13 @@ CeVIO AIの非公式Rustバインディング
 
 ```toml
 [dependencies]
-cevio = { git = "https://github.com/nusu-github/cevio-rs2" }
+cevio-ai = { git = "https://github.com/nusu-github/cevio-rs2" }
 ```
 
 ### 基本的な使用例
 
 ```rust
-use cevio::*;
+use cevio_ai::*;
 
 fn main() -> Result<()> {
     // CeVIOインスタンスを作成
@@ -41,7 +41,7 @@ fn main() -> Result<()> {
     let phonemes = cevio.phonemes("はじめまして")?;
     for phoneme in &phonemes {
         println!("{}: {:.2}s - {:.2}s",
-                 phoneme.phoneme, phoneme.start_time, phoneme.end_time);
+                 phoneme.phoneme(), phoneme.start_time(), phoneme.end_time());
     }
 
     // WAVファイルに出力
@@ -56,7 +56,7 @@ fn main() -> Result<()> {
 ### 設定を使った初期化
 
 ```rust
-use cevio::*;
+use cevio_ai::*;
 
 fn main() -> Result<()> {
     let config = CevioConfigBuilder::default()
@@ -78,7 +78,7 @@ fn main() -> Result<()> {
 ### プリセットを使用した音声設定
 
 ```rust
-use cevio::*;
+use cevio_ai::*;
 
 fn main() -> Result<()> {
     let cevio = Cevio::new()?;
@@ -113,8 +113,8 @@ fn main() -> Result<()> {
 
 本ライブラリは2つのクレートで構成されています：
 
-- **`cevio-sys`**: 低レベルFFIバインディング（自動生成）
-- **`cevio`**: 高レベル安全API
+- **`cevio-ai-sys`**: 低レベルFFIバインディング（自動生成）
+- **`cevio-ai`**: 高レベル安全API
 
 ## 依存クレート
 
