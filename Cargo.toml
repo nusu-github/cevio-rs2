@@ -1,7 +1,5 @@
 [workspace]
-members = [
-    "crates/*"
-]
+members = ["crates/*"]
 resolver = "2"
 
 [workspace.package]
@@ -11,12 +9,16 @@ edition = "2021"
 license = "Apache-2.0"
 
 [workspace.dependencies]
-anyhow = "1.0"
-windows = { version = "^0.60.0", features = [
+bounded-integer = { version = "0.5", features = ["macro"] }
+derive_builder = "0.20"
+parking_lot = "0.12"
+thiserror = "2.0"
+
+windows = { version = "0.61", features = [
     "Win32_Foundation",
     "Win32_System_Com",
     "Win32_System_Ole",
-    "Win32_System_Variant"
+    "Win32_System_Variant",
 ] }
-windows-core = "^0.60.0"
-windows-bindgen = "^0.60.0"
+windows-core = "0.61"
+windows-bindgen = "0.62"

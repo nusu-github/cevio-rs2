@@ -5,12 +5,15 @@ authors.workspace = true
 edition.workspace = true
 license.workspace = true
 
-[features]
-default = []
-
 [dependencies]
-anyhow = { workspace = true }
-derive_builder = "0.20.2"
+bounded-integer = { workspace = true }
+derive_builder = { workspace = true }
+parking_lot = { workspace = true }
+thiserror = { workspace = true }
+
 windows = { workspace = true }
 
-cevio-sys = { path = "../cevio-sys" }
+cevio-sys = { path = "../cevio-sys", features = ["unsafe_send"] }
+
+[dev-dependencies]
+serial_test = "3.2"
