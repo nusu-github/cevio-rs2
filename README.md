@@ -18,7 +18,7 @@ use cevio_ai::*;
 
 fn main() -> Result<()> {
     // CeVIOインスタンスを作成
-    let cevio = Cevio::new()?;
+    let cevio = CevioAI::new()?;
 
     // CeVIO AIを起動
     cevio.start(false)?;
@@ -66,7 +66,7 @@ fn main() -> Result<()> {
         .initial_speed(Speed::new(60)?)
         .build()?;
 
-    let cevio = Cevio::with_config(config)?;
+    let cevio = CevioAI::with_config(config)?;
 
     // 既に設定済みなのですぐに使用可能
     let state = cevio.speak("こんにちは")?;
@@ -81,7 +81,7 @@ fn main() -> Result<()> {
 use cevio_ai::*;
 
 fn main() -> Result<()> {
-    let cevio = Cevio::new()?;
+    let cevio = CevioAI::new()?;
     cevio.start(false)?;
 
     // エネルギッシュなプリセットを適用
