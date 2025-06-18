@@ -16,6 +16,18 @@
 //! このクレートが公開する COM インターフェースは本質的に unsafe です。`unsafe_send` フィーチャが有効な場合、
 //! 特定のインターフェースが `Mutex` でラップされることを前提として `Send` が実装されます。
 
+mod bindings {
+    #![allow(
+        non_snake_case,
+        non_upper_case_globals,
+        non_camel_case_types,
+        dead_code,
+        clippy::all
+    )]
+    
+    include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+}
+
 pub use bindings::CeVIO::Talk::RemoteService2::{
     IPhonemeData2, IPhonemeDataArray2, IServiceControl2, IServiceControl2V40,
     IServiceControl2V40Part, ISpeakingState2, IStringArray2, ITalker2, ITalker2V40,
@@ -33,5 +45,3 @@ unsafe impl Send for IServiceControl2V40 {}
 
 #[cfg(feature = "unsafe_send")]
 unsafe impl Send for ITalker2V40 {}
-
-mod bindings;
