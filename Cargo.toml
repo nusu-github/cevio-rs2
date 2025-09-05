@@ -21,7 +21,7 @@ parking_lot = "0.12"
 serde = { version = "1.0", features = ["derive"] }
 thiserror = "2.0"
 
-windows = { version = "0.61", features = [
+windows = { version = "0.62", features = [
     "Win32_Foundation",
     "Win32_System_Com",
     "Win32_System_Ole",
